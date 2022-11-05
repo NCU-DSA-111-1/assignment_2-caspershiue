@@ -1039,7 +1039,7 @@ void datawrite()
 {
     rewind(cfptr);
     current=first;
-    while(current->next!=NULL){
+    while(current!=NULL){
         for (x = 0; x < RECORDS/2; x++) {
         fprintf(cfptr, "%c", current->eatenchessx[x]);
         }
@@ -1054,22 +1054,11 @@ void datawrite()
             }
         }
         fprintf(cfptr,"\n\n");
-        current=current->next;
+        if(current->next==NULL)
+            break;
+        else
+            current=current->next;
     }
-    for (x = 0; x < RECORDS/2; x++) {
-        fprintf(cfptr, "%c", current->eatenchessx[x]);
-    }
-    fprintf(cfptr, "\n");
-     for (x = 0; x < RECORDS/2; x++){
-        fprintf(cfptr, "%c", current->eatenchessy[x]);
-    }
-    fprintf(cfptr, "\n");
-    for(y=0;y<ROW;y++){
-        for(x=0;x<COLUMN;x++){
-            fprintf(cfptr,"%c",current->chess[y][x]);
-        }
-    }
-    fprintf(cfptr,"\n\n");
     fprintf(cfptr,"0");
     fflush(cfptr);
 }
