@@ -6,7 +6,6 @@
 #define ROW 9
 #define COLUMN 9
 #define RECORDS 500
-#define CHESSNUMBER 20;
 void chessinitial();
 void chessprint();
 void chessmove();
@@ -17,6 +16,7 @@ int chesstransform();
 int win();
 int movecheck();
 int eatchess();
+int hitin();
 extern char *optarg;
 extern int optind, opterr, optopt;
 int mode,status;
@@ -27,12 +27,14 @@ char locbx;
 int numx=0, numy=0;
 int count=1,player;
 char action;
+int tempeatchenchess[20];
 struct node {
     char eatenchessx[RECORDS/2], eatenchessy[RECORDS/2],chess[ROW][COLUMN];
     struct node *next,*prev; 
 };
 typedef struct node NODE;
 NODE *first,*current,*previous;
+NODE* newnode;
 int main(int argc, char **argv)
 {
     while((status=getopt(argc,argv,"ns:l:"))!=-1){   //Select the mode between creating new game files or reading old game files
@@ -77,7 +79,7 @@ int main(int argc, char **argv)
         //Mode 1: creating new game files
         while (mode==1) {   
             player = count % 2;  //determine which player's term
-            printf(" 悔棋請輸入0\n 儲存先前對弈過程請輸入S\n 關閉遊戲請輸入x\n");
+            printf(" 打入棋子請輸入H\n 悔棋請輸入0\n 儲存先前對弈過程請輸入S\n 關閉遊戲請輸入x\n");
             //Player x's turn
             if (player == 1) {  
                 printf(" 玩家X輸入移動棋子的 X 座標與 Y 座標: "); //Enter the location of the chess you want to move
@@ -93,6 +95,22 @@ int main(int argc, char **argv)
                     system("clear");
                     chessprint();
                     continue;
+                }
+                else if(locbx=='h'||locbx=='H'){
+                    if(hitin()){
+                        system("clear");
+                        chessprint();
+                        count++;
+                        continue;
+                    }
+                    else{
+                        free(newnode);
+                        printf("無法打入\n");
+                        sleep(1);
+                        system("clear");
+                        chessprint();
+                        continue;
+                    }    
                 }
                 else if(locbx=='x'||locbx=='X'){  //Enter x or X to end the game
                     fclose(cfptr);
@@ -119,6 +137,22 @@ int main(int argc, char **argv)
                     system("clear");
                     chessprint();
                     continue;
+                }
+                else if(locbx=='h'||locbx=='H'){
+                    if(hitin()){
+                        system("clear");
+                        chessprint();
+                        count++;
+                        continue;
+                    }
+                    else{
+                        free(newnode);
+                        printf("無法打入\n");
+                        sleep(1);
+                        system("clear");
+                        chessprint();
+                        continue;
+                    }    
                 }
                 else if(locbx=='x'||locbx=='X'){
                     fclose(cfptr);
@@ -317,7 +351,7 @@ void chessinitial()
 void chessprint()
 {
     //Print the chess player x ate
-    for(x=0;x<=numx;x++){
+    for(x=0;x<numx;x++){
         switch(current->eatenchessx[x]){
         case'P':
             printf("\033[31m香\033[m");
@@ -449,7 +483,7 @@ void chessprint()
     }
     printf(" ====================\n");
     //Print the chess player y ate
-    for(x=0;x<=numy;x++){
+    for(x=0;x<numy;x++){
         switch(current->eatenchessy[x]) {
         case'p':
             printf("\033[34m香\033[m");
@@ -854,17 +888,6 @@ int movecheck()
         }
     }        
 }
-void chessmove()
-{
-    for(y=0;y<ROW;y++){
-        for(x=0;x<COLUMN;x++){
-            current->chess[y][x]=previous->chess[y][x];
-        }
-    }
-    current->chess[ay][ax] = current->chess[by][bx];
-    current->chess[by][bx] = 'b';
-    chessprint();
-}
 int eatchess()
 {   
     previous=current;
@@ -1009,6 +1032,215 @@ int eatchess()
         return 0;
     }
 }
+int hitin()
+{
+    int ordinal,number=0,temp;
+    newnode=(NODE*)malloc(sizeof(NODE));
+    newnode->next=NULL;
+    printf(" 請輸入要打入吃掉的第幾個棋子\n");
+    scanf("%d",&ordinal);
+    getchar();
+    ordinal--;
+    if(player==1){
+        for(x=0;x<numx;x++){
+            if(current->eatenchessx[x]!='b'){
+                tempeatchenchess[number]=current->eatenchessx[x];
+                if(number==ordinal)
+                    temp=x;
+                number++;
+            }
+        }
+    }
+    else{
+        for(x=0;x<numy;x++){
+            if(current->eatenchessy[x]!='b'){
+                tempeatchenchess[number]=current->eatenchessy[x];
+                if(number==ordinal)
+                    temp=x;
+                number++;
+            }
+        }
+    }
+    printf(" 請輸入要打入的位置\n");
+    scanf("%d%d",&locax,&locay);
+    getchar();
+    ax=-locax+9;
+    ay=locay-1;
+    if(current->chess[ay][ax]!='b')
+        return 0;
+    else{
+        for(x=0;x<RECORDS/2;x++){
+            newnode->eatenchessx[x]=current->eatenchessx[x];
+        }
+        for(x=0;x<RECORDS/2;x++){
+            newnode->eatenchessy[x]=current->eatenchessy[x];
+        }
+        for(y=0;y<ROW;y++){
+            for(x=0;x<COLUMN;x++){
+                newnode->chess[y][x]=current->chess[y][x];
+            }
+        }
+        switch(tempeatchenchess[ordinal]){
+        case'P':
+            if(ay==8)
+                return 0;
+            else{
+                previous=current;
+                current=newnode;
+                current->prev=previous;
+                previous->next=current;
+                current->chess[ay][ax]='p';
+                current->eatenchessx[temp]='b';
+                return 1;
+            }
+        case'N':
+            if(ay>6)
+                return 0;
+            else{
+                previous=current;
+                current=newnode;
+                current->prev=previous;
+                previous->next=current;
+                current->chess[ay][ax]='n';
+                current->eatenchessx[temp]='b';
+                return 1;
+            }
+        case'S':
+            previous=current;
+            current=newnode;
+            current->prev=previous;
+            previous->next=current;
+            current->chess[ay][ax]='s';
+            current->eatenchessx[temp]='b';
+            return 1;
+        case'G':
+            previous=current;
+            current=newnode;
+            current->prev=previous;
+            previous->next=current;
+            current->chess[ay][ax]='g';
+            current->eatenchessx[temp]='b';
+            return 1;
+        case'W':
+            if(ay==8)
+                return 0;
+            else{
+                for(y=0;y<ROW;y++){
+                    if(current->chess[y][ax]=='w')
+                        return 0;
+                }
+                previous=current;
+                current=newnode;
+                current->prev=previous;
+                previous->next=current;
+                current->chess[ay][ax]='w';
+                current->eatenchessx[temp]='b';
+                return 1;
+            }
+        case'F':
+            previous=current;
+            current=newnode;
+            current->prev=previous;
+            previous->next=current;
+            current->chess[ay][ax]='f';
+            current->eatenchessx[temp]='b';
+            return 1;
+        case'A':
+            previous=current;
+            current=newnode;
+            current->prev=previous;
+            previous->next=current;
+            current->chess[ay][ax]='a';
+            current->eatenchessx[temp]='b';
+            return 1;
+        case'p':
+            if(ay==0)
+                return 0;
+            else{
+                previous=current;
+                current=newnode;
+                current->prev=previous;
+                previous->next=current;
+                current->chess[ay][ax]='P';
+                current->eatenchessx[temp]='b';
+                return 1;
+            }
+        case'n':
+            if(ay<3)
+                return 0;
+            else{
+                previous=current;
+                current=newnode;
+                current->prev=previous;
+                previous->next=current;
+                current->chess[ay][ax]='N';
+                current->eatenchessx[temp]='b';
+                return 1;
+            }
+        case's':
+            previous=current;
+            current=newnode;
+            current->prev=previous;
+            previous->next=current;
+            current->chess[ay][ax]='S';
+            current->eatenchessx[temp]='b';
+            return 1;
+        case'g':
+            previous=current;
+            current=newnode;
+            current->prev=previous;
+            previous->next=current;
+            current->chess[ay][ax]='G';
+            current->eatenchessx[temp]='b';
+            return 1;
+        case'f':
+            previous=current;
+            current=newnode;
+            current->prev=previous;
+            previous->next=current;
+            current->chess[ay][ax]='F';
+            current->eatenchessx[temp]='b';
+            return 1;
+        case'a':
+            previous=current;
+            current=newnode;
+            current->prev=previous;
+            previous->next=current;
+            current->chess[ay][ax]='A';
+            current->eatenchessx[temp]='b';
+            return 1;
+        case'w':
+            if(ay==0)
+                return 0;
+            else{
+                for(y=0;y<ROW;y++){
+                    if(current->chess[y][ax]=='W')
+                        return 0;
+                }
+                previous=current;
+                current=newnode;
+                current->prev=previous;
+                previous->next=current;
+                current->chess[ay][ax]='W';
+                current->eatenchessx[temp]='b';
+                return 1;
+            }
+        default:
+            return 0;
+        }
+    }
+}
+void chessmove()
+{
+    for(y=0;y<ROW;y++){
+        for(x=0;x<COLUMN;x++){
+            current->chess[y][x]=previous->chess[y][x];
+        }
+    }
+    current->chess[ay][ax] = current->chess[by][bx];
+    current->chess[by][bx] = 'b';
+    chessprint();
+}
 int win()
 {
     //If anyone eat 王 or 玉,he is wins
@@ -1024,16 +1256,37 @@ int win()
         return 0;
 }
 void chessback()
-{
+{   
+    NODE *temp;
+    temp=current;
     current=previous;
     previous=previous->prev;
     current->next=NULL;
-    if(player==1)
-        numy=numy-1;
-    else
-        numx=numx-1;
+    if(player==1){
+        for(x=0;x<numy;x++){
+            if(temp->eatenchessy[x]!=current->eatenchessy[x]){
+                system("clear");
+                chessprint();
+                free(temp);
+                return;
+            }
+        }
+        numy--;
+    }
+    else{
+        for(x=0;x<numx;x++){
+            if(temp->eatenchessx[x]!=current->eatenchessx[x]){
+                system("clear");
+                chessprint();
+                free(temp);
+                return;
+            }
+        }
+        numx--;
+    }
     system("clear");
     chessprint();
+    free(temp);
 }
 void datawrite()
 {
@@ -1064,13 +1317,16 @@ void datawrite()
 }
 void readdata()
 {
+    NODE* temp;
     while(!feof(cfptr)){
         fscanf(cfptr, "%s", current->eatenchessx);
          //when read 0, stop reading the file
         if(current->eatenchessx[0]=='0'){
+            temp=current;
             current=previous;
             current->next=NULL;
             previous=previous->prev;
+            free(temp);
             return;
         }
         else{
