@@ -203,7 +203,7 @@ int main(int argc, char **argv)
                 numx=(count-1)/2;
                 numy=numx;
             }
-            if(current->next!=NULL||current->prev!=NULL){   
+            if(current->next!=NULL && current->prev!=NULL){   
                 printf(" 移動下一手請輸入f\n 退回上一手請輸入r\n 繼續玩請輸入p\n 關檔請輸入x\n");
                 scanf("%c",&action);
                 getchar();
@@ -269,7 +269,7 @@ int main(int argc, char **argv)
                 }
             }
             //On the first step
-            else if(current->prev=NULL){     
+            else if(current->prev==NULL){     
                 printf(" 移動下一手請輸入f\n 繼續遊玩請輸入p\n 關檔請輸入x\n");
                 scanf("%c",&action);
                 getchar();
@@ -1162,7 +1162,7 @@ int hitin()
                 current->prev=previous;
                 previous->next=current;
                 current->chess[ay][ax]='P';
-                current->eatenchessx[temp]='b';
+                current->eatenchessy[temp]='b';
                 return 1;
             }
         case'n':
@@ -1174,7 +1174,7 @@ int hitin()
                 current->prev=previous;
                 previous->next=current;
                 current->chess[ay][ax]='N';
-                current->eatenchessx[temp]='b';
+                current->eatenchessy[temp]='b';
                 return 1;
             }
         case's':
@@ -1183,7 +1183,7 @@ int hitin()
             current->prev=previous;
             previous->next=current;
             current->chess[ay][ax]='S';
-            current->eatenchessx[temp]='b';
+            current->eatenchessy[temp]='b';
             return 1;
         case'g':
             previous=current;
@@ -1191,7 +1191,7 @@ int hitin()
             current->prev=previous;
             previous->next=current;
             current->chess[ay][ax]='G';
-            current->eatenchessx[temp]='b';
+            current->eatenchessy[temp]='b';
             return 1;
         case'f':
             previous=current;
@@ -1199,7 +1199,7 @@ int hitin()
             current->prev=previous;
             previous->next=current;
             current->chess[ay][ax]='F';
-            current->eatenchessx[temp]='b';
+            current->eatenchessy[temp]='b';
             return 1;
         case'a':
             previous=current;
@@ -1207,7 +1207,7 @@ int hitin()
             current->prev=previous;
             previous->next=current;
             current->chess[ay][ax]='A';
-            current->eatenchessx[temp]='b';
+            current->eatenchessy[temp]='b';
             return 1;
         case'w':
             if(ay==0)
@@ -1222,7 +1222,7 @@ int hitin()
                 current->prev=previous;
                 previous->next=current;
                 current->chess[ay][ax]='W';
-                current->eatenchessx[temp]='b';
+                current->eatenchessy[temp]='b';
                 return 1;
             }
         default:
