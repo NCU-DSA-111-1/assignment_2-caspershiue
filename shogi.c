@@ -16,18 +16,14 @@ int chesstransform();
 int win();
 int movecheck();
 int eatchess();
-int hitin();
+int hitin(int locay,int locax);
 extern char *optarg;
 extern int optind, opterr, optopt;
-int mode,status;
 FILE* cfptr;
 int x, y;
-int locby,locax,locay,ax, ay, bx, by;
-char locbx;
+int ax, ay, bx, by;
 int numx=0, numy=0;
 int count=1,player;
-char action;
-int tempeatchenchess[20];
 struct node {
     char eatenchessx[RECORDS/2], eatenchessy[RECORDS/2],chess[ROW][COLUMN];
     struct node *next,*prev; 
@@ -37,6 +33,10 @@ NODE *first,*current,*previous;
 NODE* newnode;
 int main(int argc, char **argv)
 {
+    char locbx;
+    int locby,locax,locay;
+    int mode,status;
+    char action;
     while((status=getopt(argc,argv,"ns:l:"))!=-1){   //Select the mode between creating new game files or reading old game files
         switch(status){
         case'n':
@@ -96,7 +96,7 @@ int main(int argc, char **argv)
                     continue;
                 }
                 else if(locbx=='h'||locbx=='H'){
-                    if(hitin()){
+                    if(hitin(locay,locax)){
                         system("clear");
                         chessprint();
                         count++;
@@ -138,7 +138,7 @@ int main(int argc, char **argv)
                     continue;
                 }
                 else if(locbx=='h'||locbx=='H'){
-                    if(hitin()){
+                    if(hitin(locay,locax)){
                         system("clear");
                         chessprint();
                         count++;
@@ -283,7 +283,6 @@ int main(int argc, char **argv)
                     sleep(1);
                     system("clear");
                     chessprint();
-                    count--;
                 }   
                 else if(action=='p'||action=='P'){
                     mode=1;
@@ -1031,8 +1030,9 @@ int eatchess()
         return 0;
     }
 }
-int hitin()
+int hitin(int locay,int locax)
 {
+    int tempeatchenchess[20];
     int ordinal,number=0,temp;
     newnode=(NODE*)malloc(sizeof(NODE));
     newnode->next=NULL;
@@ -1363,6 +1363,7 @@ void readdata()
         count++;
         
     }
+    count++;
 }
 int chesstransform()
 {
