@@ -72,7 +72,6 @@ int main(int argc, char **argv)
     else{
         system("clear");
         readdata();
-        current=first;
         chessprint();
     }
     while(1){
@@ -351,7 +350,7 @@ void chessinitial()
 void chessprint()
 {
     //Print the chess player x ate
-    for(x=0;x<numx;x++){
+    for(x=0;x<=numx;x++){
         switch(current->eatenchessx[x]){
         case'P':
             printf("\033[31m香\033[m");
@@ -483,7 +482,7 @@ void chessprint()
     }
     printf(" ====================\n");
     //Print the chess player y ate
-    for(x=0;x<numy;x++){
+    for(x=0;x<=numy;x++){
         switch(current->eatenchessy[x]) {
         case'p':
             printf("\033[34m香\033[m");
@@ -1091,6 +1090,7 @@ int hitin()
                 previous->next=current;
                 current->chess[ay][ax]='p';
                 current->eatenchessx[temp]='b';
+                numx++;
                 return 1;
             }
         case'N':
@@ -1103,6 +1103,7 @@ int hitin()
                 previous->next=current;
                 current->chess[ay][ax]='n';
                 current->eatenchessx[temp]='b';
+                numx++;
                 return 1;
             }
         case'S':
@@ -1112,6 +1113,7 @@ int hitin()
             previous->next=current;
             current->chess[ay][ax]='s';
             current->eatenchessx[temp]='b';
+            numx++;
             return 1;
         case'G':
             previous=current;
@@ -1120,6 +1122,7 @@ int hitin()
             previous->next=current;
             current->chess[ay][ax]='g';
             current->eatenchessx[temp]='b';
+            numx++;
             return 1;
         case'W':
             if(ay==8)
@@ -1135,6 +1138,7 @@ int hitin()
                 previous->next=current;
                 current->chess[ay][ax]='w';
                 current->eatenchessx[temp]='b';
+                numx++;
                 return 1;
             }
         case'F':
@@ -1144,6 +1148,7 @@ int hitin()
             previous->next=current;
             current->chess[ay][ax]='f';
             current->eatenchessx[temp]='b';
+            numx++;
             return 1;
         case'A':
             previous=current;
@@ -1152,6 +1157,7 @@ int hitin()
             previous->next=current;
             current->chess[ay][ax]='a';
             current->eatenchessx[temp]='b';
+            numx++;
             return 1;
         case'p':
             if(ay==0)
@@ -1163,6 +1169,7 @@ int hitin()
                 previous->next=current;
                 current->chess[ay][ax]='P';
                 current->eatenchessy[temp]='b';
+                numy++;
                 return 1;
             }
         case'n':
@@ -1175,6 +1182,7 @@ int hitin()
                 previous->next=current;
                 current->chess[ay][ax]='N';
                 current->eatenchessy[temp]='b';
+                numy++;
                 return 1;
             }
         case's':
@@ -1184,6 +1192,7 @@ int hitin()
             previous->next=current;
             current->chess[ay][ax]='S';
             current->eatenchessy[temp]='b';
+            numy++;
             return 1;
         case'g':
             previous=current;
@@ -1200,6 +1209,7 @@ int hitin()
             previous->next=current;
             current->chess[ay][ax]='F';
             current->eatenchessy[temp]='b';
+            numy++;
             return 1;
         case'a':
             previous=current;
@@ -1208,6 +1218,7 @@ int hitin()
             previous->next=current;
             current->chess[ay][ax]='A';
             current->eatenchessy[temp]='b';
+            numy++;
             return 1;
         case'w':
             if(ay==0)
@@ -1223,6 +1234,7 @@ int hitin()
                 previous->next=current;
                 current->chess[ay][ax]='W';
                 current->eatenchessy[temp]='b';
+                numy++;
                 return 1;
             }
         default:
@@ -1318,6 +1330,7 @@ void datawrite()
 void readdata()
 {
     NODE* temp;
+    count=0;
     while(!feof(cfptr)){
         fscanf(cfptr, "%s", current->eatenchessx);
          //when read 0, stop reading the file
@@ -1343,6 +1356,12 @@ void readdata()
         current->next=NULL;
         previous->next=current;
         }
+        if(count%2==0)
+            numx++;
+        else
+            numy++;
+        count++;
+        
     }
 }
 int chesstransform()
