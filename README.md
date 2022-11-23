@@ -1,13 +1,21 @@
-# Shogi in C 
+# Shogi in C
+
 Assignment 2
 
 # Compile
 ```
-gcc main.c
+gcc -c src/main.c -o build/main.o
+gcc -c src/shogi.c -o build/shogi.o
+gcc -c src/file.c -o build/file.o
+gcc build/main.o build/shogi.o build/file.o -o bin/shogi
+```
+or
+```
+make
 ```
 # Run
 ```
-./a.out -n -s chessgame.txt
+./bin/shogi -n -s chessgame.txt
 ```
 
 Player x Enter the location of the chess you want to move.
@@ -36,7 +44,7 @@ Enter s to save the game.
 
 Enter x to end the game.
 ```
-./a.out -l chessgame.txt 
+./bin/shogi -l chessgame.txt 
 ```
 Enter f to see the next chessboard.
 
