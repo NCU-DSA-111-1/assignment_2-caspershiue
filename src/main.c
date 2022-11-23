@@ -1,5 +1,5 @@
-#include"shogi.h"
-#include"file.h"
+#include"../inc/shogi.h"
+#include"../inc/file.h"
 
 extern char *optarg;
 extern int optind, opterr, optopt;

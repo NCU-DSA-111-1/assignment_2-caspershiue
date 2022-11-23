@@ -20,11 +20,12 @@ typedef struct node NODE;
 
 extern NODE *first,*current,*previous;
 extern NODE* newnode;
-char locbx;
-int locby,locax,locay;
-int ax, ay, bx, by;
-int numx=0, numy=0;
-int count=1,player;
+
+extern char locbx;
+extern int locby,locax,locay;
+extern int ax, ay, bx, by;
+extern int numx, numy;
+extern int count,player;
 
 void chessinitial();
 void chessprint();

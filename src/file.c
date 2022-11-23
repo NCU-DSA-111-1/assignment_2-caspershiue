@@ -1,5 +1,7 @@
 #include "../inc/file.h"
-#include"shogi.h"
+#include"../inc/shogi.h"
+
+FILE *cfptr;
 
 void readdata()
 {

@@ -1,4 +1,4 @@
-#include "shogi.h"
+#include "../inc/shogi.h"
 
 NODE *first,*current,*previous;
 NODE* newnode;
