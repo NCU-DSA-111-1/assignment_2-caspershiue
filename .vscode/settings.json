@@ -33,6 +33,7 @@
     "math.h": "c",
     "unistd.h": "c",
     "shogi.h": "c",
-    "file.h": "c"
+    "file.h": "c",
+    "timer.h": "c"
   }
 }

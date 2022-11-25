@@ -7,7 +7,8 @@ Assignment 2
 gcc -c src/main.c -o build/main.o
 gcc -c src/shogi.c -o build/shogi.o
 gcc -c src/file.c -o build/file.o
-gcc build/main.o build/shogi.o build/file.o -o bin/shogi
+gcc -c src/timer.c -o build/timer.o
+gcc build/main.o build/shogi.o build/file.o build/timer.o -o bin/shogi -lev
 ```
 or
 ```

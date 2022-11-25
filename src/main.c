@@ -1,5 +1,6 @@
-#include"../inc/shogi.h"
-#include"../inc/file.h"
+#include "../inc/shogi.h"
+#include "../inc/file.h"
+#include "../inc/timer.h"
 
 extern char *optarg;
 extern int optind, opterr, optopt;
@@ -37,8 +38,6 @@ int main(int argc, char **argv)
     first=current;
     if(mode==1){
         chessinitial();//Initialize the chessboard
-        system("clear");
-        chessprint();//Print the chessboard and the chess
     }
     else{
         system("clear");
@@ -49,10 +48,9 @@ int main(int argc, char **argv)
         //Mode 1: creating new game files
         while (mode==1) {   
             player = count % 2;  //determine which player's term
-            printf(" 打入棋子請輸入H\n 悔棋請輸入0\n 儲存先前對弈過程請輸入S\n 關閉遊戲請輸入x\n");
             //Player x's turn
-            if (player == 1) {  
-                printf(" 玩家X輸入移動棋子的 X 座標與 Y 座標: "); //Enter the location of the chess you want to move
+            if (player == 1) {
+                timer();
                 scanf("%c", &locbx);  //get input
                 getchar();
                 if (locbx == '0') {  //Enter 0 to return the chess move
@@ -94,7 +92,7 @@ int main(int argc, char **argv)
             }
             //Player y's turn
             else {
-                printf(" 玩家Y輸入移動棋子的 X 座標與 Y 座標: ");  // Player y's turn
+                timer();
                 scanf("%c", &locbx);
                 getchar();
                 if (locbx == '0') {
