@@ -1,5 +1,6 @@
 #include "../inc/file.h"
 #include"../inc/shogi.h"
+#include "../inc/timer.h"
 
 FILE *cfptr;
 
@@ -23,6 +24,8 @@ void readdata()
             current->next=NULL;
             previous=previous->prev;
             free(temp);
+            fscanf(cfptr,"\n");
+            fscanf(cfptr,"%ld %ld",&xusedtime,&yusedtime);  //read the time
             return;
         }
         else{
@@ -73,6 +76,7 @@ void datawrite()
         else
             current=current->next;
     }
-    fprintf(cfptr,"0");
+    fprintf(cfptr,"0\n"); //End symbol
+    fprintf(cfptr,"%ld %ld",xusedtime,yusedtime); //Save the time been used
     fflush(cfptr);
 }

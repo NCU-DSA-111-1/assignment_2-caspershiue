@@ -1,11 +1,11 @@
 #include "../inc/shogi.h"
+#include "../inc/timer.h"
 
 NODE *first,*current,*previous;
 NODE* newnode;
 
-char locbx;
-int locby,locax,locay;
-int ax, ay, bx, by;
+char bx;
+int by, ax, ay;
 int numx=0, numy=0;
 int count=1,player;
 
@@ -221,6 +221,7 @@ void chessprint()
     }
     printf("\n");
 }
+//The rule of the chess movement
 int movecheck()
 {
     int i;
@@ -594,18 +595,22 @@ int movecheck()
         }
     }        
 }
+//Save the thing that the target saved(include 'b')
 int eatchess()
 {
     int x;
     previous=current;
-    current=(NODE*)malloc(sizeof(NODE));
+    current=(NODE*)malloc(sizeof(NODE)); //Create a node to save this step
+    //Link the link list
     current->prev=previous;
     current->next=NULL;
     previous->next=current;
+    //Save the eaten chess being eaten before
     for(x=0;x<RECORDS/2;x++){
-        current->eatenchessx[x]=previous->eatenchessx[x];
+        current->eatenchessx[x]=previous->eatenchessx[x];  
         current->eatenchessy[x]=previous->eatenchessy[x];
     }
+    //Save the eaten chess being eaten this step
     switch (previous->chess[by][bx]) {
     case'p':
     case'n':
@@ -635,6 +640,7 @@ int eatchess()
             numx=numx+1;
             return 1;
             break;
+        //The promoted chess should turn back if being eaten
         case'C':
             current->eatenchessx[numx]='P';
             numx=numx+1;
@@ -746,16 +752,18 @@ int hitin()
     int ordinal,number=0,temp;
     newnode=(NODE*)malloc(sizeof(NODE));
     newnode->next=NULL;
-    printf(" 請輸入要打入吃掉的第幾個棋子\n");
-    scanf("%d",&ordinal);
+    timerh1();  //Start the timer of hit in
+    // timerh1 stop
+    scanf("%d",&ordinal);  //Read the chess you want to hit in by entering the ordinal of it in the eatenchess   
     getchar();
-    ordinal--;
+    timerh2(); //Start the timer again
+    ordinal--; //Change the number into the array number of eatenchess
     if(player==1){
         for(x=0;x<numx;x++){
             if(current->eatenchessx[x]!='b'){
-                tempeatchenchess[number]=current->eatenchessx[x];
-                if(number==ordinal)
-                    temp=x;
+                tempeatchenchess[number]=current->eatenchessx[x];  //tempeatenchess only save the word denote chess in eatenchess(discard 'b')
+                if(number==ordinal)  //Find the chess choosen
+                    temp=x;  //Save the location of the chess in eatenchess
                 number++;
             }
         }
@@ -770,13 +778,17 @@ int hitin()
             }
         }
     }
-    printf(" 請輸入要打入的位置\n");
-    scanf("%d%d",&locax,&locay);
+    //timerh2 stop
+    scanf("%d%d",&ax,&ay); //Read the location you want to hit in to
     getchar();
-    ax=-locax+9;
-    ay=locay-1;
-    if(current->chess[ay][ax]!='b')
+    //Change to the computer locaton
+    ax=-ax+9;  
+    ay=ay-1;
+    if(current->chess[ay][ax]!='b'){ // If there isn't a chess ,return wrong 
+        free(newnode);
         return 0;
+    }
+    //Remove the chosen chess in eatenchess by change it to 'b'   
     else{
         for(x=0;x<RECORDS/2;x++){
             newnode->eatenchessx[x]=current->eatenchessx[x];
@@ -786,9 +798,10 @@ int hitin()
         }
         for(y=0;y<ROW;y++){
             for(x=0;x<COLUMN;x++){
-                newnode->chess[y][x]=current->chess[y][x];
+                newnode->chess[y][x]=current->chess[y][x];  //Put the chess into the chessboard
             }
         }
+        //The rule of hit in
         switch(tempeatchenchess[ordinal]){
         case'P':
             if(ay==8)
@@ -804,8 +817,10 @@ int hitin()
                 return 1;
             }
         case'N':
-            if(ay>6)
+            if(ay>6){
+                free(newnode);
                 return 0;
+            }
             else{
                 previous=current;
                 current=newnode;
@@ -839,8 +854,10 @@ int hitin()
                 return 0;
             else{
                 for(y=0;y<ROW;y++){
-                    if(current->chess[y][ax]=='w')
+                    if(current->chess[y][ax]=='w'){
+                        free(newnode);
                         return 0;
+                    }
                 }
                 previous=current;
                 current=newnode;
@@ -870,8 +887,10 @@ int hitin()
             numx++;
             return 1;
         case'p':
-            if(ay==0)
+            if(ay==0){
+                free(newnode);
                 return 0;
+            }
             else{
                 previous=current;
                 current=newnode;
@@ -883,8 +902,10 @@ int hitin()
                 return 1;
             }
         case'n':
-            if(ay<3)
+            if(ay<3){
+                free(newnode);
                 return 0;
+            }
             else{
                 previous=current;
                 current=newnode;
@@ -931,12 +952,16 @@ int hitin()
             numy++;
             return 1;
         case'w':
-            if(ay==0)
+            if(ay==0){
+                free(newnode);
                 return 0;
+            }
             else{
                 for(y=0;y<ROW;y++){
-                    if(current->chess[y][ax]=='W')
+                    if(current->chess[y][ax]=='W'){
+                        free(newnode);
                         return 0;
+                    }
                 }
                 previous=current;
                 current=newnode;
@@ -948,6 +973,7 @@ int hitin()
                 return 1;
             }
         default:
+            free(newnode);
             return 0;
         }
     }
@@ -962,17 +988,17 @@ void chessmove()
     }
     current->chess[ay][ax] = current->chess[by][bx];
     current->chess[by][bx] = 'b';
-    chessprint(numx,numy);
+    chessprint();
 }
 int win()
 {
     //If anyone eat 王 or 玉,he is wins
     if (current->eatenchessx[numx-1] == 'K') { 
-        printf("\n遊戲結束！玩家1獲勝");
+        printf("\n遊戲結束！玩家X獲勝");
         return 1;
     }
     else if (current->eatenchessy[numy-1] == 'k') {
-        printf("\n遊戲結束！玩家2獲勝");
+        printf("\n遊戲結束！玩家Y獲勝");
         return 1;
     }
     else
@@ -982,39 +1008,21 @@ void chessback()
 {
     int x;
     NODE *temp;
+    //return to last node
     temp=current;
     current=previous;
     previous=previous->prev;
     current->next=NULL;
-    if(player==1){
-        for(x=0;x<numy;x++){
-            if(temp->eatenchessy[x]!=current->eatenchessy[x]){
-                system("clear");
-                chessprint(numx,numy);
-                free(temp);
-                return;
-            }
-        }
+    if(player==1)
         numy--;
-    }
-    else{
-        for(x=0;x<numx;x++){
-            if(temp->eatenchessx[x]!=current->eatenchessx[x]){
-                system("clear");
-                chessprint(numx,numy);
-                free(temp);
-                return;
-            }
-        }
+    else
         numx--;
-    }
-    system("clear");
-    chessprint(numx,numy);
-    free(temp);
+    free(temp); //free the last node's space
 }
-int chesstransform()
+int chesspromote()
 {
     char turn;
+    //Rule of shogi promotion
     while(1){
         switch(current->chess[ay][ax]){
         case'p':
@@ -1023,7 +1031,7 @@ int chesstransform()
                 return 1;
             }
             else if(by>5||ay>5){
-                printf("升變請輸入y\n不升變請輸入n\n");
+                timerp();
                 scanf("%c",&turn);
                 getchar();
                 if(turn=='y'){
@@ -1031,18 +1039,13 @@ int chesstransform()
                     return 1;
                 }
                 else if(turn=='n'){
-                    system("clear");
-                    chessprint(numx,numy);
                     return 0;
                 }
                 else{
-                printf("無效指令請重新輸入\n");
+                    printf("無效指令請重新輸入\n");
                     sleep(1);
-                    system("clear");
-                    chessprint(numx,numy);
                     break;
                 }
-                
             }
             else
                 return 0;
@@ -1052,7 +1055,7 @@ int chesstransform()
                 return 1;
             }
             else if(by>5||ay>5){
-                printf("升變請輸入y\n不升變請輸入n\n");
+                timerp();
                 scanf("%c",&turn);
                 getchar();
                 if(turn=='y'){
@@ -1060,15 +1063,11 @@ int chesstransform()
                     return 1;
                 }
                 else if(turn=='n'){
-                    system("clear");
-                    chessprint(numx,numy);
                     return 0;
                 }
                 else{
                     printf("無效指令請重新輸入\n");
                     sleep(1);
-                    system("clear");
-                    chessprint(numx,numy);
                     break;
                 }
             }
@@ -1080,7 +1079,7 @@ int chesstransform()
                 return 1;
             }
             else if(by>5||ay>5){
-                printf("升變請輸入y\n不升變請輸入n\n");
+                timerp();
                 scanf("%c",&turn);
                 getchar();
                 if(turn=='y'){
@@ -1088,23 +1087,19 @@ int chesstransform()
                     return 1;
                 }
                 else if(turn=='n'){
-                    system("clear");
-                    chessprint(numx,numy);
                     return 0;
                 }
                 else{
                     printf("無效指令請重新輸入\n");
                     sleep(1);
-                    system("clear");
-                    chessprint(numx,numy);
-                    break;                
+                    break;
                 }
             }
             else
                 return 0; 
         case's':
             if(by>5||ay>5){
-                printf("升變請輸入y\n不升變請輸入n\n");
+                timerp();
                 scanf("%c",&turn);
                 getchar();
                 if(turn=='y'){
@@ -1112,15 +1107,11 @@ int chesstransform()
                     return 1;
                 }
                 else if(turn=='n'){
-                    system("clear");
-                    chessprint(numx,numy);
                     return 0;
                 }
                 else{
                     printf("無效指令請重新輸入\n");
                     sleep(1);
-                    system("clear");
-                    chessprint(numx,numy);
                     break;
                 }
             }
@@ -1128,7 +1119,7 @@ int chesstransform()
                 return 0;
         case'f':
             if(by>5||ay>5){
-                printf("升變請輸入y\n不升變請輸入n\n");
+                timerp();
                 scanf("%c",&turn);
                 getchar();
                 if(turn=='y'){
@@ -1136,15 +1127,11 @@ int chesstransform()
                     return 1;
                 }
                 else if(turn=='n'){
-                    system("clear");
-                    chessprint(numx,numy);
                     return 0;
                 }
                 else{
                     printf("無效指令請重新輸入\n");
                     sleep(1);
-                    system("clear");
-                    chessprint(numx,numy);
                     break;
                 }
             }
@@ -1152,7 +1139,7 @@ int chesstransform()
                 return 0;
         case'a':
             if(by>5||ay>5){
-                printf("升變請輸入y\n不升變請輸入n\n");
+                timerp();
                 scanf("%c",&turn);
                 getchar();
                 if(turn=='y'){
@@ -1160,15 +1147,11 @@ int chesstransform()
                     return 1;
                 }
                 else if(turn=='n'){
-                    system("clear");
-                    chessprint(numx,numy);
                     return 0;
                 }
                 else{
                     printf("無效指令請重新輸入\n");
                     sleep(1);
-                    system("clear");
-                    chessprint(numx,numy);
                     break;
                 }
             }
@@ -1180,7 +1163,7 @@ int chesstransform()
                 return 1;
             }
             else if(by<3||ay<3){
-                printf("升變請輸入y\n不升變請輸入n\n");
+                timerp();
                 scanf("%c",&turn);
                 getchar();
                 if(turn=='y'){
@@ -1188,15 +1171,11 @@ int chesstransform()
                     return 1;
                 }
                 else if(turn=='n'){
-                    system("clear");
-                    chessprint(numx,numy);
                     return 0;
                 }
                 else{
                     printf("無效指令請重新輸入\n");
                     sleep(1);
-                    system("clear");
-                    chessprint(numx,numy);
                     break;
                 }
             }
@@ -1208,7 +1187,7 @@ int chesstransform()
                 return 1;
             }
             else if(by<3||ay<3){
-                printf("升變請輸入y\n不升變請輸入n\n");
+                timerp();
                 scanf("%c",&turn);
                 getchar();
                 if(turn=='y'){
@@ -1216,21 +1195,17 @@ int chesstransform()
                     return 1;
                 }
                 else if(turn=='n'){
-                    system("clear");
-                    chessprint(numx,numy);
                     return 0;
                 }
                 else{
                     printf("無效指令請重新輸入\n");
                     sleep(1);
-                    system("clear");
-                    chessprint(numx,numy);
                     break;
                 }
             }
         case'S':
             if(by<3||ay<3){
-                printf("升變請輸入y\n不升變請輸入n\n");
+                timerp();
                 scanf("%c",&turn);
                 getchar();
                 if(turn=='y'){
@@ -1238,15 +1213,11 @@ int chesstransform()
                     return 1;
                 }
                 else if(turn=='n'){
-                    system("clear");
-                    chessprint(numx,numy);
                     return 0;
                 }
                 else{
                     printf("無效指令請重新輸入\n");
                     sleep(1);
-                    system("clear");
-                    chessprint(numx,numy);
                     break;
                 }
             }
@@ -1254,7 +1225,7 @@ int chesstransform()
                 return 0;
         case'F':
             if(by<3||ay<3){
-                printf("升變請輸入y\n不升變請輸入n\n");
+                timerp();
                 scanf("%c",&turn);
                 getchar();
                 if(turn=='y'){
@@ -1263,15 +1234,11 @@ int chesstransform()
                     break;
                 }
                 else if(turn=='n'){
-                    system("clear");
-                    chessprint(numx,numy);
                     return 0;
                 }
                 else{
                     printf("無效指令請重新輸入\n");
                     sleep(1);
-                    system("clear");
-                    chessprint(numx,numy);
                     break;
                 }
             }
@@ -1279,7 +1246,7 @@ int chesstransform()
                 return 0;
         case'A':
             if(by<3||ay<3){
-                printf("升變請輸入y\n不升變請輸入n\n");
+                timerp();
                 scanf("%c",&turn);
                 getchar();
                 if(turn=='y'){
@@ -1288,15 +1255,11 @@ int chesstransform()
                     break;
                 }
                 else if(turn=='n'){
-                    system("clear");
-                    chessprint(numx,numy);
                     return 0;
                 }
                 else{
                     printf("無效指令請重新輸入\n");
                     sleep(1);
-                    system("clear");
-                    chessprint(numx,numy);
                     break;
                 }
             }
@@ -1308,7 +1271,7 @@ int chesstransform()
                 return 1;
             }
             else if(by<3||ay<3){
-                printf("升變請輸入y\n不升變請輸入n\n");
+                timerp();
                 scanf("%c",&turn);
                 getchar();
                 if(turn=='y'){
@@ -1316,15 +1279,11 @@ int chesstransform()
                     return 1;
                 }
                 else if(turn=='n'){
-                    system("clear");
-                    chessprint(numx,numy);
                     return 0;
                 }
                 else{
                     printf("無效指令請重新輸入\n");
                     sleep(1);
-                    system("clear");
-                    chessprint(numx,numy);
                     break;
                 }
             }
