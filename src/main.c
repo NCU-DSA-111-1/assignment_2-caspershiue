@@ -30,7 +30,6 @@ int main(int argc, char **argv)
         default:
             return 0;
         }
-
     }
     //the first node
     current=(NODE*)malloc(sizeof(NODE)); 
@@ -159,7 +158,7 @@ int main(int argc, char **argv)
                 numy=numx;
             }
             if(current->next!=NULL && current->prev!=NULL){   
-                printf(" 移動下一手請輸入f\n 退回上一手請輸入r\n 繼續玩請輸入p\n 關檔請輸入x\n");
+                printf(" 移動下一手請輸入f\n 退回上一手請輸入b\n 繼續玩請輸入p\n 關檔請輸入x\n");
                 scanf("%c",&action);
                 getchar();
                 if(action=='f'||action=='F'){  //Enter f to print the next move 
@@ -168,7 +167,7 @@ int main(int argc, char **argv)
                     chessprint();
                     count++;
                 }
-                else if(action=='r'||action=='R'){  //Enter f to print the next move 
+                else if(action=='b'||action=='B'){  //Enter f to print the next move 
                     current=current->prev;
                     system("clear");
                     chessprint();
@@ -198,7 +197,7 @@ int main(int argc, char **argv)
             }
             //On the final step
             else if(current->next==NULL){ 
-                printf(" 退回上一手請輸入r\n 繼續玩請輸入p\n 關檔請輸入x\n");
+                printf(" 退回上一手請輸入b\n 繼續玩請輸入p\n 關檔請輸入x\n");
                 scanf("%c",&action);
                 getchar();
                 if(action=='f'||action=='F'){
@@ -207,7 +206,7 @@ int main(int argc, char **argv)
                     system("clear");
                     chessprint();
                 }
-                else if(action=='r'||action=='R'){
+                else if(action=='b'||action=='B'){
                     current=current->prev;
                     system("clear");
                     chessprint();
@@ -245,7 +244,7 @@ int main(int argc, char **argv)
                     chessprint();
                     count++;
                 }
-                else if(action=='r'||action=='R'){
+                else if(action=='b'||action=='B'){
                     printf("無上一手棋\n");
                     sleep(1);
                     system("clear");
