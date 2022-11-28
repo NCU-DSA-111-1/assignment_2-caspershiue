@@ -18,6 +18,10 @@ make
 ```
 ./bin/shogi -n -s chessgame.txt
 ```
+or
+```
+make run1
+```
 
 Player Enter the location of the chess you want to move.(location entering way: X space Y)
 
@@ -44,10 +48,14 @@ Enter x to end the game.
 ```
 ./bin/shogi -l chessgame.txt 
 ```
+or
+```
+make run2
+```
 Enter f to see the next chessboard.
 
 
-Enter r to see the Previous chessboard.
+Enter b to see the Previous chessboard.
 
 
 Enter p to continue playing the game basic on the step you see.
