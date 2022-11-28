@@ -15,6 +15,7 @@ or
 make
 ```
 # Run
+#To create new game :
 ```
 ./bin/shogi -n -s chessgame.txt
 ```
@@ -22,6 +23,7 @@ or
 ```
 make run1
 ```
+
 
 Player Enter the location of the chess you want to move.(location entering way: X space Y)
 
@@ -45,6 +47,9 @@ Enter s to save the game and the playing time.
 
 
 Enter x to end the game.
+
+#To load old game :
+
 ```
 ./bin/shogi -l chessgame.txt 
 ```
@@ -52,13 +57,12 @@ or
 ```
 make run2
 ```
-Enter f to see the next chessboard.
 
+
+Enter f to see the next chessboard.
 
 Enter b to see the Previous chessboard.
 
-
 Enter p to continue playing the game basic on the step you see.
-
 
 Enter x to end reading.
