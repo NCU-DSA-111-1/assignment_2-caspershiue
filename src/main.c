@@ -51,7 +51,7 @@ int main(int argc, char **argv)
             //Player X's turn
             if (player == 1) {
                 timer();  //Start the timer and print it
-                scanf("%c", &bx);  //Get input
+                scanf("%c", &bx);  //timer stop and get input
                 getchar();
                 if (bx == '0') {  //Enter 0 to return the chess move
                     chessback();
@@ -60,6 +60,8 @@ int main(int argc, char **argv)
                 }
                 else if(bx=='s'||bx=='S'){  //Enter s or S to write the game and the time into a file
                     datawrite();
+                    printf(" 遊戲已儲存！\n");
+                    sleep(1);
                     continue;
                 }
                 else if(bx=='h'||bx=='H'){  //Enter h or H to hit in the chess
@@ -82,7 +84,7 @@ int main(int argc, char **argv)
                     scanf("%d", &by);
                     getchar();  
                     timerm(); //Start the timer of chessmove
-                    scanf("%d%d", &ax, &ay);  //Enter the location that the chess move to
+                    scanf("%d%d", &ax, &ay);  //timerm stop and read the location of the target 
                     getchar();
                 }
             }
@@ -98,6 +100,8 @@ int main(int argc, char **argv)
                 }
                 else if(bx=='s'||bx=='S'){
                     datawrite();
+                    printf(" 遊戲已儲存！\n");
+                    sleep(1);
                     continue;
                 }
                 else if(bx=='h'||bx=='H'){

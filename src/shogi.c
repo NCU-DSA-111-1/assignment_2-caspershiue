@@ -227,7 +227,8 @@ int movecheck()
     int i;
     if (player == 1) {
         switch (current->chess[by][bx]) {
-        case'p':
+        //Player X's chess(up)
+        case'p':  //香
             if (ax == bx && ay > by){
                 for (i = by + 1; i < ay; i++) {
                     if (current->chess[i][bx] != 'b')
@@ -238,36 +239,36 @@ int movecheck()
             else
                 return 0;
             break;
-        case'n':
+        case'n':  //桂
             if (ay == by + 2 && (ax == bx + 1 || ax == bx - 1))
                 return 1;
             else
                 return 0;
             break;
-        case's':
+        case's':  //銀
             if ((ay == by + 1 && ax == bx) || (ay == by + 1 && ax == bx - 1) || (ay == by + 1 && ax == bx + 1) || (ay == by - 1 && ax == bx - 1) || (ay == by - 1 && ax == bx + 1))
                 return 1;
             else
                 return 0;
             break;
         
-        case'g':
-        case'c':
-        case't':
-        case'e':
-        case'j':
+        case'g':  //金
+        case'c':  //杏(香 promote)
+        case't':  //圭(桂 promote)
+        case'e':  //全(銀 promote)
+        case'j':  //と(步 promote)
             if ((ay == by + 1 && ax == bx) || (ay == by + 1 && ax == bx - 1) || (ay == by + 1 && ax == bx + 1) || (ay == by - 1 && ax == bx) || (ay == by && ax == bx + 1) || (ay == by && ax == bx - 1))
                 return 1;
             else
                 return 0;
             break;
-        case'k':
+        case'k':  //王
             if (abs(ax - bx) < 2 && abs(ay - by) < 2)
                 return 1;
             else
                 return 0;
             break;
-        case'f':
+        case'f':  //飛
             if (ax == bx && ay > by){
                 for (i = by + 1; i < ay; i++) {
                     if (current->chess[i][bx] != 'b')
@@ -299,7 +300,7 @@ int movecheck()
             else
                 return 0;
             break;
-        case'd':
+        case'd':  //龍(飛 promote)
             if (ax == bx && ay > by){
                 for (i = by + 1; i < ay; i++) {
                     if (current->chess[i][bx] != 'b')
@@ -333,7 +334,7 @@ int movecheck()
             else
                 return 0;
             break;
-        case'a':
+        case'a':  //角
             if(ax - bx > 0 && ax - bx == ay - by){
                 for (i = by + 1; i < ay; i++) {
                     if (current->chess[i][bx + i - by] != 'b')
@@ -365,7 +366,7 @@ int movecheck()
             else
                 return 0;
             break;
-        case'h':
+        case'h':  //馬(角 promote)
             if(ax - bx > 0 && ax - bx == ay - by){
                 for (i = by + 1; i < ay; i++) {
                     if (current->chess[i][bx + i - by] != 'b')
@@ -399,7 +400,7 @@ int movecheck()
             else
                 return 0;
             break;
-        case'w':
+        case'w':  //步
             if (ay == by + 1 && ax == bx)
                 return 1;
             else
@@ -412,6 +413,7 @@ int movecheck()
     }
     else {
         switch (current->chess[by][bx]) {
+        //Player Y's chess
         case'P':
             if (ax == bx && ay < by){
                 for (i = by - 1; i > ay; i--) {
