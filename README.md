@@ -1,6 +1,31 @@
 # Shogi in C
 
-Assignment 2
+Environment：Linux
+
+Need to install lbev：
+
+1.Download and Install
+```
+wget http://dist.schmorp.de/libev/libev-4.33.tar.gz
+tar -xzf libev-4.33.tar.gz
+cd libev-4.33
+./configure
+make
+sudo make install
+```
+
+2.Configure Dynamic Linker
+
+```
+sudo sh -c 'echo "/usr/local/lib" > /etc/ld.so.conf.d/libev.conf'
+sudo ldconfig
+```
+3.Set Set LD_LIBRARY_PATH
+```
+export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
+echo 'export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH' >> ~/.bashrc
+source ~/.bashrc
+```
 
 # Compile
 ```
@@ -12,16 +37,16 @@ gcc build/main.o build/shogi.o build/file.o build/timer.o -o bin/shogi -lev
 ```
 or
 ```
-make
+sudo make
 ```
 # Run
 #To create new game :
 ```
-./bin/shogi -n -s chessgame.txt
+sudo ./bin/shogi -n -s chessgame.txt
 ```
 or
 ```
-make run1
+sudo make run1
 ```
 
 
@@ -51,11 +76,11 @@ Enter x to end the game.
 #To load old game :
 
 ```
-./bin/shogi -l chessgame.txt 
+sudo ./bin/shogi -l chessgame.txt 
 ```
 or
 ```
-make run2
+sudo make run2
 ```
 
 
